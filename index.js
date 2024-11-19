@@ -1,9 +1,13 @@
-// Importer discord.js
 const { Client, GatewayIntentBits } = require('discord.js');
-require('dotenv').config(); // Pour charger les variables d'environnement à partir du fichier .env
+require('dotenv').config();
 
-// Créer une instance de Client
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
+// Créer une instance de Client avec les intents appropriés
+const client = new Client({ intents: [
+  GatewayIntentBits.Guilds,
+  GatewayIntentBits.GuildMessages,
+  GatewayIntentBits.MessageContent,
+  GatewayIntentBits.GuildMembers // Ajoute les intents nécessaires ici
+] });
 
 // Récupérer le token du bot à partir des variables d'environnement
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
@@ -15,8 +19,8 @@ client.once('ready', () => {
 
 // Événement déclenché lorsqu'un message est envoyé
 client.on('messageCreate', (message) => {
-    // Vérifier que le message commence par "!hello" et que ce n'est pas un message du bot lui-même
     if (message.author.bot) return;
+
     if (message.content === '!hello') {
         message.channel.send(`Hello, ${message.author.username} ! 👋`);
     }
