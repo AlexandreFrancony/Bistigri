@@ -13,8 +13,8 @@ const client = new Client({ intents: [
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
 
 const commands = {
-    hello: (message) => message.channel.send(`Hello, ${message.author.username} ! 👋`),
-    help: (message) => message.channel.send('Voici les commandes disponibles :\n- !hello\n- !help')
+    hello: require('./functions/hello'),
+    help: require('./functions/help')
 };
 
 // Événement déclenché lorsque le bot est prêt
