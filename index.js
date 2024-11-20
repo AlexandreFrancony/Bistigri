@@ -9,13 +9,10 @@ const client = new Client({ intents: [
   GatewayIntentBits.GuildMembers // Ajoute les intents nécessaires ici
 ] });
 
+const commands = require('./functions/f_list');
+
 // Récupérer le token du bot à partir des variables d'environnement
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
-
-const commands = {
-    hello: require('./functions/hello'),
-    help: require('./functions/help')
-};
 
 // Événement déclenché lorsque le bot est prêt
 client.once('ready', () => {
