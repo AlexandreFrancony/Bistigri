@@ -5,19 +5,23 @@ module.exports = async (message) => {
         return message.channel.send("Cette commande ne peut être utilisée que dans un serveur.");
       }
   
-      // Récupérer le rôle 'Secret Santa' dans le serveur
+      // Récupérer le rôle 'Secret Santa' dans le serveur par son ID depuis la variable d'environnement
       const santaRoleId = process.env.SANTA_ROLE_ID;
-      const santaRole = message.guild.roles.cache.get(santaRoleId);
+      const santaRole = await message.guild.roles.fetch(santaRoleId); // Utilisation de fetch pour s'assurer que le rôle est bien récupéré
+  
       if (!santaRole) {
-        return message.channel.send("Le rôle 'Secret Santa' n'a pas été trouvé. Veuillez le créer et l'attribuer aux participants.");
+        return message.channel.send("Le rôle 'Secret Santa' n'existe pas. Veuillez vérifier l'ID du rôle et l'attribuer aux participants.");
       }
+  
+      // Récupérer tous les membres du serveur pour s'assurer que le cache est mis à jour
+      await message.guild.members.fetch();
   
       // Récupérer tous les membres ayant le rôle 'Secret Santa'
       const members = message.guild.members.cache.filter(member => member.roles.cache.has(santaRole.id) && !member.user.bot);
       const participants = Array.from(members.values());
   
       if (participants.length < 2) {
-        return message.channel.send("Il faut au moins deux participants avec le rôle 'Secret Santa' pour organiser un échange de cadeaux." + santaRoleId + members);
+        return message.channel.send("Il faut au moins deux participants avec le rôle 'Secret Santa' pour organiser un échange de cadeaux.");
       }
   
       // Mélanger les participants et attribuer un partenaire
@@ -60,3 +64,4 @@ module.exports = async (message) => {
       message.channel.send("Une erreur est survenue lors de l'organisation du Secret Santa. Veuillez réessayer.");
     }
   };
+  
