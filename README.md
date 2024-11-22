@@ -51,6 +51,7 @@ Pour inviter votre bot sur votre serveur de test, suivez les étapes suivantes :
 2. **Commandes Disponibles**
    - `!hello` : Le bot vous renverra une salutation.
    - `!help` : Le bot vous présentera les commandes disponibles.
+   - 
 
 ## Déploiement sur Heroku
 
