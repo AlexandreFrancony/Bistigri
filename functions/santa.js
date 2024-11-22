@@ -9,7 +9,7 @@ module.exports = async (message) => {
       const santaRoleId = process.env.SANTA_ROLE_ID;
       const santaRole = message.guild.roles.cache.get(santaRoleId);
       if (!santaRole) {
-        return message.channel.send("Le rôle 'Secret Santa' n'existe pas. Veuillez le créer et l'attribuer aux participants.");
+        return message.channel.send("Le rôle 'Secret Santa' n'a pas été trouvé. Veuillez le créer et l'attribuer aux participants." + santaRoleId);
       }
   
       // Récupérer tous les membres ayant le rôle 'Secret Santa'
