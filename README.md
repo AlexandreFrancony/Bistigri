@@ -30,6 +30,7 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants :
    - Créez un fichier `.env` à la racine du projet et ajoutez-y votre token Discord :
      ```env
      DISCORD_BOT_TOKEN=VOTRE_TOKEN_ICI
+     SANTA_ROLE_ID=ID_DU_ROLE_SANTA
      ```
    - Vous pouvez vous référer au fichier `.env.example` pour voir les variables attendues.
 
