@@ -31,6 +31,8 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants :
      ```env
      DISCORD_BOT_TOKEN=VOTRE_TOKEN_ICI
      SANTA_ROLE_ID=ID_DU_ROLE_SANTA
+     ID_OWNER=ID_DU_PROPRIETAIRE
+     ID_FRIENDS=id1,id2,id3
      ```
    - Vous pouvez vous référer au fichier `.env.example` pour voir les variables attendues.
 

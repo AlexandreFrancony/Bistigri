@@ -1,5 +1,38 @@
+// santa.js - Commande pour !santa
+
 module.exports = async (message) => {
     try {
+      // Vérifier que l'utilisateur est autorisé à exécuter la commande
+      const ownerId = process.env.ID_OWNER;
+      const friendsIds = process.env.ID_FRIENDS ? process.env.ID_FRIENDS.split(',') : [];
+  
+      if (message.author.id !== ownerId) {
+        if (friendsIds.includes(message.author.id)) {
+          switch (message.author.id) {
+            case '605511035528544286':
+              return message.channel.send("Bastos, c'est un test");
+            case '254713783677747202':
+              return message.channel.send("Morel, ");
+            case '353946381368426497':
+              return message.channel.send("Victor, ");
+            case '338737552372531201':
+              return message.channel.send("Adrien, ");
+            case '385835735032397834':
+              return message.channel.send("Ilhan, ");
+            case '617814020933681193':
+              return message.channel.send("Simon, ");
+            case '210475469731004416':
+              return message.channel.send("Arthur, ");
+            case '351644821376729110':
+              return message.channel.send("Thiplouv, ");
+            default:
+              return message.channel.send("Vous n'avez pas les droits nécessaires pour exécuter cette commande.");
+          }
+        } else {
+          return message.channel.send("Vous n'avez pas les droits nécessaires pour exécuter cette commande.");
+        }
+      }
+  
       // Vérifier que le message provient d'un salon de texte
       if (!message.guild) {
         return message.channel.send("Cette commande ne peut être utilisée que dans un serveur.");
