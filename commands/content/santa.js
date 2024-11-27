@@ -17,7 +17,7 @@ module.exports = {
         if (friendsIds.includes(interaction.user.id)) {
           return handleFriendResponse(interaction);
         } else {
-          return interaction.reply("Vous n'avez pas les droits nécessaires pour exécuter cette commande.");
+          return interaction.reply("Vous n'avez pas les droits nécessaires pour exécuter cette commande. id: "+ interaction.user.id);
         }
       }
 
