@@ -11,8 +11,6 @@ const client = new Client({ intents: [
   GatewayIntentBits.GuildMembers
 ] });
 
-const commands = require('./functions/f_list');
-
 // Événement déclenché lorsque le bot est prêt
 client.once(Events.ClientReady, readyClient => {
     console.log(`${readyClient.user.tag} est maintenant en ligne !`);
