@@ -3,7 +3,7 @@
 module.exports = async (interaction) => {
   switch (interaction.user.id) {
     case '605511035528544286':
-      await interaction.reply("Bastos... trop tôt pour regarder petit gourmand");
+      return await interaction.reply("Bastos... trop tôt pour regarder petit gourmand");
       setTimeout(() => {
         interaction.followUp("Bastos... Mon cher Bastos...").then(() => {
           setTimeout(() => {
