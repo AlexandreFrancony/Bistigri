@@ -2,7 +2,7 @@
 
 const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('@discordjs/builders');
 const axios = require('axios');
-const colorCombinations = require('data/Colors.json');
+const colorCombinations = require('./data/Colors.json');
 
 module.exports = {
   data: new SlashCommandBuilder()
