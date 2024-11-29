@@ -57,7 +57,7 @@ module.exports = {
       await interaction.reply({ content: "Voici votre commandant aléatoire !", components: [row] });
     } catch (error) {
       console.error(error);
-      await interaction.reply({ content: "Une erreur est survenue lors de la récupération du commandant. Veuillez réessayer plus tard.", ephemeral: true });
+      await interaction.reply({ content: "Une erreur est survenue lors de la récupération du commandant. Veuillez réessayer plus tard. URL: " + url, ephemeral: true });
     }
   }
 };
