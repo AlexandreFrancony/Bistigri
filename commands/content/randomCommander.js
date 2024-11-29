@@ -35,64 +35,70 @@ module.exports = {
     }
 
     try {
-      // Faire une requête pour obtenir un commandant aléatoire depuis l'API Scryfall
-      const response = await axios.get(scryfallQuery);
-      const data = response.data;
+      // Fonction pour générer une réponse avec un commandant
+      const generateCommanderResponse = async () => {
+        const response = await axios.get(scryfallQuery);
+        const data = response.data;
 
-      if (!data || !data.data || data.data.length === 0) {
-        return interaction.reply({ content: "Aucun commandant n'a été trouvé pour les critères spécifiés.", ephemeral: true });
-      }
+        if (!data || !data.data || data.data.length === 0) {
+          return interaction.reply({ content: "Aucun commandant n'a été trouvé pour les critères spécifiés.", ephemeral: true });
+        }
 
-      // Si les résultats sont paginés, récupérer une page aléatoire
-      let commanderData = data.data;
-      if (data.has_more) {
-        const randomPage = Math.ceil(Math.random() * Math.ceil(data.total_cards / 175)); // Scryfall returns 175 cards per page
-        const paginatedResponse = await axios.get(`${scryfallQuery}&page=${randomPage}`);
-        commanderData = paginatedResponse.data.data;
-      }
+        // Si les résultats sont paginés, récupérer une page aléatoire
+        let commanderData = data.data;
+        if (data.has_more) {
+          const randomPage = Math.ceil(Math.random() * Math.ceil(data.total_cards / 175)); // Scryfall returns 175 cards per page
+          const paginatedResponse = await axios.get(`${scryfallQuery}&page=${randomPage}`);
+          commanderData = paginatedResponse.data.data;
+        }
 
-      // Choisir un commandant aléatoire parmi les résultats
-      const randomIndex = Math.floor(Math.random() * commanderData.length);
-      const commander = commanderData[randomIndex];
+        // Choisir un commandant aléatoire parmi les résultats
+        const randomIndex = Math.floor(Math.random() * commanderData.length);
+        const commander = commanderData[randomIndex];
 
-      // Créer les boutons pour accéder à la page du commandant sur Scryfall, EDHRec, et un autre pour tirer un autre commandant
-      const row = new ActionRowBuilder().addComponents(
-        new ButtonBuilder()
-          .setLabel(`Voir ${commander.name} sur Scryfall`)
-          .setStyle(ButtonStyle.Link)
-          .setURL(commander.scryfall_uri),
-        new ButtonBuilder()
-          .setLabel(`Voir ${commander.name} sur EDHRec`)
-          .setStyle(ButtonStyle.Link)
-          .setURL(`https://edhrec.com/route/?cc=${encodeURIComponent(commander.name)}`),
-        new ButtonBuilder()
-          .setLabel('Un autre !')
-          .setStyle(ButtonStyle.Primary)
-          .setCustomId('another_commander')
-      );
+        // Créer les boutons pour accéder à la page du commandant sur Scryfall, EDHRec, et un autre pour tirer un autre commandant
+        const row = new ActionRowBuilder().addComponents(
+          new ButtonBuilder()
+            .setLabel(`Voir ${commander.name} sur Scryfall`)
+            .setStyle(ButtonStyle.Link)
+            .setURL(commander.scryfall_uri),
+          new ButtonBuilder()
+            .setLabel(`Voir ${commander.name} sur EDHRec`)
+            .setStyle(ButtonStyle.Link)
+            .setURL(`https://edhrec.com/route/?cc=${encodeURIComponent(commander.name)}`),
+          new ButtonBuilder()
+            .setLabel('Un autre !')
+            .setStyle(ButtonStyle.Primary)
+            .setCustomId('another_commander')
+        );
 
-      // Ajouter l'image de la carte dans la réponse
-      await interaction.reply({
-        content: `Voici votre commandant aléatoire : **${commander.name}** !`,
-        components: [row],
-        embeds: [
-          {
-            title: commander.name,
-            image: {
-              url: commander.image_uris ? commander.image_uris.normal : commander.card_faces[0].image_uris.normal
-            },
-            url: commander.scryfall_uri
-          }
-        ]
-      });
+        // Ajouter l'image de la carte dans la réponse
+        await interaction.update({
+          content: `Voici votre commandant aléatoire : **${commander.name}** !`,
+          components: [row],
+          embeds: [
+            {
+              title: commander.name,
+              image: {
+                url: commander.image_uris ? commander.image_uris.normal : commander.card_faces[0].image_uris.normal
+              },
+              url: commander.scryfall_uri
+            }
+          ]
+        });
+      };
+
+      // Initial generation of commander
+      await generateCommanderResponse();
 
       // Listener pour le bouton "Un autre !"
       const filter = i => i.customId === 'another_commander' && i.user.id === interaction.user.id;
-      const collector = interaction.channel.createMessageComponentCollector({ filter, time: 15000 });
+      const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 }); // Extending collector to 60 seconds
 
       collector.on('collect', async i => {
         if (i.customId === 'another_commander') {
-          await this.execute(interaction); // Relancer la commande
+          interaction = i; // Update interaction to handle the response properly
+          await generateCommanderResponse();
         }
       });
 
