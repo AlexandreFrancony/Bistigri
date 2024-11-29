@@ -1,4 +1,3 @@
-
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, SlashCommandBuilder } = require('discord.js');
 
 const axios = require('axios');
@@ -56,12 +55,16 @@ module.exports = {
       const randomIndex = Math.floor(Math.random() * commanderData.length);
       const commander = commanderData[randomIndex];
 
-      // Créer un bouton pour accéder à la page du commandant sur Scryfall
+      // Créer les boutons pour accéder à la page du commandant sur Scryfall et EDHRec
       const row = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
           .setLabel(`Voir ${commander.name} sur Scryfall`)
           .setStyle(ButtonStyle.Link)
-          .setURL(commander.scryfall_uri)
+          .setURL(commander.scryfall_uri),
+        new ButtonBuilder()
+          .setLabel(`Voir ${commander.name} sur EDHRec`)
+          .setStyle(ButtonStyle.Link)
+          .setURL(`https://edhrec.com/route/?cc=${encodeURIComponent(commander.name)}`)
       );
 
       await interaction.reply({ content: `Voici votre commandant aléatoire : **${commander.name}** !`, components: [row] });
