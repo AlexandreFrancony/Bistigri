@@ -69,6 +69,7 @@ module.exports = {
             .setLabel('Un autre !')
             .setStyle(ButtonStyle.Primary)
             .setCustomId('another_commander')
+            .setDisabled(false)
         );
 
         const messagePayload = {
