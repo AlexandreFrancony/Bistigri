@@ -4,6 +4,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const handleFriendResponse = require('./functions/friend-responses');
 
 module.exports = {
+  cooldown: 60,
   data: new SlashCommandBuilder()
     .setName('santa')
     .setDescription('Organiser un Secret Santa entre les membres avec le rôle Secret Santa'),
