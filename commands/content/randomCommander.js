@@ -2,7 +2,6 @@
 
 const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('@discordjs/builders');
 const axios = require('axios');
-const colorCombinations = require('./data/Colors.json');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -17,11 +16,11 @@ module.exports = {
     const colorsInput = interaction.options.getString('couleurs');
     const colors = colorsInput ? colorsInput.toUpperCase().split('') : [];
 
-    // Déterminer l'URL en fonction des couleurs fournies
-    let url = 'https://edhrec.com/random/commander';
+    // Déterminer les couleurs pour l'API Scryfall
+    let scryfallQuery = 'https://api.scryfall.com/cards/search?q=is%3Acommander';
     if (colors.length > 0) {
       if (colors.includes('O') && colors.length === 1) {
-        url = 'https://edhrec.com/commanders/colorless';
+        scryfallQuery += '+identity%3Cc';
       } else if (colors.includes('O')) {
         return interaction.reply({ content: "L'option 'O' pour incolore ne peut pas être combinée avec d'autres couleurs.", ephemeral: true });
       } else {
@@ -30,34 +29,37 @@ module.exports = {
         if (invalidColors.length > 0) {
           return interaction.reply({ content: `Les couleurs fournies sont invalides: ${invalidColors.join(', ')}. Utilisez uniquement W, U, B, R, G, ou O.`, ephemeral: true });
         }
-        // Construire l'URL pour les couleurs choisies à partir du JSON
-        const colorsParam = colors.sort().join('').toUpperCase();
-        const colorName = colorCombinations[colorsParam];
-        if (!colorName) {
-          return interaction.reply({ content: "Aucune combinaison de couleurs valide n'a été trouvée.", ephemeral: true });
-        }
-        url = `https://edhrec.com/commanders/${colorName.toLowerCase()}`;
-        await interaction.reply({ content: url, ephemeral: true });
-
+        // Construire la requête de couleur
+        const colorsParam = colors.sort().join('').toLowerCase();
+        scryfallQuery += `+identity%3D${colorsParam}`;
       }
     }
 
     try {
-      // Faire une requête pour vérifier la page
-      await axios.get(url);
+      // Faire une requête pour obtenir un commandant aléatoire depuis l'API Scryfall
+      const response = await axios.get(scryfallQuery);
+      const data = response.data;
 
-      // Créer un bouton pour accéder à la page du commandant
+      if (!data || !data.data || data.data.length === 0) {
+        return interaction.reply({ content: "Aucun commandant n'a été trouvé pour les critères spécifiés.", ephemeral: true });
+      }
+
+      // Choisir un commandant aléatoire parmi les résultats
+      const randomIndex = Math.floor(Math.random() * data.data.length);
+      const commander = data.data[randomIndex];
+
+      // Créer un bouton pour accéder à la page du commandant sur Scryfall
       const row = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
-          .setLabel('Voir le commandant sur EDHRec')
+          .setLabel(`Voir ${commander.name} sur Scryfall`)
           .setStyle(ButtonStyle.Link)
-          .setURL(url)
+          .setURL(commander.scryfall_uri)
       );
 
-      await interaction.reply({ content: "Voici votre commandant aléatoire !", components: [row] });
+      await interaction.reply({ content: `Voici votre commandant aléatoire : **${commander.name}** !`, components: [row] });
     } catch (error) {
       console.error(error);
-      await interaction.reply({ content: "Une erreur est survenue lors de la récupération du commandant. Veuillez réessayer plus tard. URL: " + url, ephemeral: true });
+      await interaction.reply({ content: "Une erreur est survenue lors de la récupération du commandant. Veuillez réessayer plus tard.", ephemeral: true });
     }
   }
 };
