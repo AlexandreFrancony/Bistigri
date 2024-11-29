@@ -9,7 +9,7 @@ module.exports = {
     .setDescription('Obtenez un commandant aléatoire de Magic: The Gathering selon les couleurs choisies')
     .addStringOption(option =>
       option.setName('couleurs')
-        .setDescription('Entrez les couleurs (W, U, B, R, G, ou O pour incolore)')
+        .setDescription('Entrez les couleurs (W, U, B, R, G, ou C pour incolore)')
         .setRequired(false)
     ),
   async execute(interaction) {
@@ -19,9 +19,9 @@ module.exports = {
     // Déterminer les couleurs pour l'API Scryfall
     let scryfallQuery = 'https://api.scryfall.com/cards/search?q=is%3Acommander';
     if (colors.length > 0) {
-      if (colors.includes('O') && colors.length === 1) {
+      if (colors.includes('C') && colors.length === 1) {
         scryfallQuery += '+identity%3Cc';
-      } else if (colors.includes('O')) {
+      } else if (colors.includes('C')) {
         return interaction.reply({ content: "L'option 'O' pour incolore ne peut pas être combinée avec d'autres couleurs.", ephemeral: true });
       } else {
         const validColors = ['W', 'U', 'B', 'R', 'G'];
