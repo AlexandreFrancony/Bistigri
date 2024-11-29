@@ -55,7 +55,7 @@ module.exports = {
       const randomIndex = Math.floor(Math.random() * commanderData.length);
       const commander = commanderData[randomIndex];
 
-      // Créer les boutons pour accéder à la page du commandant sur Scryfall et EDHRec
+      // Créer les boutons pour accéder à la page du commandant sur Scryfall, EDHRec, et un autre pour tirer un autre commandant
       const row = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
           .setLabel(`Voir ${commander.name} sur Scryfall`)
@@ -64,7 +64,11 @@ module.exports = {
         new ButtonBuilder()
           .setLabel(`Voir ${commander.name} sur EDHRec`)
           .setStyle(ButtonStyle.Link)
-          .setURL(`https://edhrec.com/route/?cc=${encodeURIComponent(commander.name)}`)
+          .setURL(`https://edhrec.com/route/?cc=${encodeURIComponent(commander.name)}`),
+        new ButtonBuilder()
+          .setLabel('Un autre !')
+          .setStyle(ButtonStyle.Primary)
+          .setCustomId('another_commander')
       );
 
       // Ajouter l'image de la carte dans la réponse
@@ -81,6 +85,17 @@ module.exports = {
           }
         ]
       });
+
+      // Listener pour le bouton "Un autre !"
+      const filter = i => i.customId === 'another_commander' && i.user.id === interaction.user.id;
+      const collector = interaction.channel.createMessageComponentCollector({ filter, time: 15000 });
+
+      collector.on('collect', async i => {
+        if (i.customId === 'another_commander') {
+          await this.execute(interaction); // Relancer la commande
+        }
+      });
+
     } catch (error) {
       console.error(error);
       await interaction.reply({ content: "Une erreur est survenue lors de la récupération du commandant. Veuillez réessayer plus tard.", ephemeral: true });
