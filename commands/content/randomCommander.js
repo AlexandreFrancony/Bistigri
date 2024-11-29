@@ -37,6 +37,8 @@ module.exports = {
           return interaction.reply({ content: "Aucune combinaison de couleurs valide n'a été trouvée.", ephemeral: true });
         }
         url = `https://edhrec.com/commanders/${colorName.toLowerCase()}`;
+        await interaction.reply({ content: url, ephemeral: true });
+
       }
     }
 
