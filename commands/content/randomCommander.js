@@ -67,7 +67,20 @@ module.exports = {
           .setURL(`https://edhrec.com/route/?cc=${encodeURIComponent(commander.name)}`)
       );
 
-      await interaction.reply({ content: `Voici votre commandant aléatoire : **${commander.name}** !`, components: [row] });
+      // Ajouter l'image de la carte dans la réponse
+      await interaction.reply({
+        content: `Voici votre commandant aléatoire : **${commander.name}** !`,
+        components: [row],
+        embeds: [
+          {
+            title: commander.name,
+            image: {
+              url: commander.image_uris ? commander.image_uris.normal : commander.card_faces[0].image_uris.normal
+            },
+            url: commander.scryfall_uri
+          }
+        ]
+      });
     } catch (error) {
       console.error(error);
       await interaction.reply({ content: "Une erreur est survenue lors de la récupération du commandant. Veuillez réessayer plus tard.", ephemeral: true });
