@@ -20,7 +20,7 @@ module.exports = {
     let scryfallQuery = 'https://api.scryfall.com/cards/search?q=is%3Acommander';
     if (colors.length > 0) {
       if (colors.includes('C') && colors.length === 1) {
-        scryfallQuery += '+identity%3Cc';
+        scryfallQuery += '+identity%3DC';
       } else if (colors.includes('C')) {
         return interaction.reply({ content: "L'option 'O' pour incolore ne peut pas être combinée avec d'autres couleurs.", ephemeral: true });
       } else {
