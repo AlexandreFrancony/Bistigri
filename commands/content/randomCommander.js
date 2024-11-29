@@ -1,4 +1,3 @@
-// randomCommander.js - Commande pour /randomcommander
 
 const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('@discordjs/builders');
 const axios = require('axios');
@@ -29,7 +28,7 @@ module.exports = {
         if (invalidColors.length > 0) {
           return interaction.reply({ content: `Les couleurs fournies sont invalides: ${invalidColors.join(', ')}. Utilisez uniquement W, U, B, R, G, ou O.`, ephemeral: true });
         }
-        // Construire la requête de couleur
+        // Construire la requête de couleur en utilisant la notation de Scryfall
         const colorsParam = colors.sort().join('').toLowerCase();
         scryfallQuery += `+identity%3D${colorsParam}`;
       }
@@ -44,9 +43,17 @@ module.exports = {
         return interaction.reply({ content: "Aucun commandant n'a été trouvé pour les critères spécifiés.", ephemeral: true });
       }
 
+      // Si les résultats sont paginés, récupérer une page aléatoire
+      let commanderData = data.data;
+      if (data.has_more) {
+        const randomPage = Math.ceil(Math.random() * Math.ceil(data.total_cards / 175)); // Scryfall returns 175 cards per page
+        const paginatedResponse = await axios.get(`${scryfallQuery}&page=${randomPage}`);
+        commanderData = paginatedResponse.data.data;
+      }
+
       // Choisir un commandant aléatoire parmi les résultats
-      const randomIndex = Math.floor(Math.random() * data.data.length);
-      const commander = data.data[randomIndex];
+      const randomIndex = Math.floor(Math.random() * commanderData.length);
+      const commander = commanderData[randomIndex];
 
       // Créer un bouton pour accéder à la page du commandant sur Scryfall
       const row = new ActionRowBuilder().addComponents(
