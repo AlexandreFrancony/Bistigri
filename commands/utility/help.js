@@ -13,6 +13,6 @@ module.exports = {
       helpMessage += `- \`/${command.data.name}\` : ${command.data.description}\n`;
     });
 
-    await interaction.reply(helpMessage);
+    await interaction.reply({ content: helpMessage, flags: MessageFlags.Ephemeral });
   },
 };
