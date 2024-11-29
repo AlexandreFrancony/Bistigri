@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 module.exports = {
+  cooldown: 5,
   data: new SlashCommandBuilder()
     .setName('help')
     .setDescription('Affiche les commandes disponibles pour le bot.'),
