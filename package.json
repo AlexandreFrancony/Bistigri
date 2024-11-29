@@ -6,7 +6,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "slash": "node deploy-commands.js",
-    "logs": "heroku logs --tail --app bistigri"
+    "logs": "heroku logs --tail --app bistigri",
+    "w1": "heroku ps:scale worker=1 --app bistigri",
+    "w0": "heroku ps:scale worker=0 --app bistigri"
   },
   "keywords": [],
   "author": "",
