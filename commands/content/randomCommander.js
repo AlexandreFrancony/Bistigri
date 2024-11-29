@@ -113,5 +113,25 @@ module.exports = {
         await generateCommanderResponse(false);
       }
     });
+
+    collector.on('end', async () => {
+      try {
+        // Edit the message to remove the "Un autre !" button after the collector expires
+        const originalMessage = await interaction.fetchReply();
+        const updatedRow = new ActionRowBuilder().addComponents(
+          new ButtonBuilder()
+            .setLabel(`Voir ${originalMessage.embeds[0].title} sur Scryfall`)
+            .setStyle(ButtonStyle.Link)
+            .setURL(originalMessage.embeds[0].url),
+          new ButtonBuilder()
+            .setLabel(`Voir ${originalMessage.embeds[0].title} sur EDHRec`)
+            .setStyle(ButtonStyle.Link)
+            .setURL(`https://edhrec.com/route/?cc=${encodeURIComponent(originalMessage.embeds[0].title)}`)
+        );
+        await interaction.editReply({ components: [updatedRow] });
+      } catch (error) {
+        console.error('Failed to remove the button:', error);
+      }
+    });
   }
 };
