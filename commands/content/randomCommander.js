@@ -1,5 +1,4 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, SlashCommandBuilder } = require('discord.js');
-
 const axios = require('axios');
 
 module.exports = {
@@ -21,12 +20,12 @@ module.exports = {
       if (colors.includes('C') && colors.length === 1) {
         scryfallQuery += '+identity%3DC';
       } else if (colors.includes('C')) {
-        return interaction.reply({ content: "L'option 'O' pour incolore ne peut pas être combinée avec d'autres couleurs.", ephemeral: true });
+        return interaction.reply({ content: "L'option 'C' pour incolore ne peut pas être combinée avec d'autres couleurs.", ephemeral: true });
       } else {
         const validColors = ['W', 'U', 'B', 'R', 'G'];
         const invalidColors = colors.filter(color => !validColors.includes(color));
         if (invalidColors.length > 0) {
-          return interaction.reply({ content: `Les couleurs fournies sont invalides: ${invalidColors.join(', ')}. Utilisez uniquement W, U, B, R, G, ou O.`, ephemeral: true });
+          return interaction.reply({ content: `Les couleurs fournies sont invalides: ${invalidColors.join(', ')}. Utilisez uniquement W, U, B, R, G, ou C.`, ephemeral: true });
         }
         // Construire la requête de couleur en utilisant la notation de Scryfall
         const colorsParam = colors.sort().join('').toLowerCase();
@@ -34,9 +33,9 @@ module.exports = {
       }
     }
 
-    try {
-      // Fonction pour générer une réponse avec un commandant
-      const generateCommanderResponse = async () => {
+    const generateCommanderResponse = async (isInitial = true) => {
+      try {
+        // Faire une requête pour obtenir un commandant aléatoire depuis l'API Scryfall
         const response = await axios.get(scryfallQuery);
         const data = response.data;
 
@@ -72,8 +71,7 @@ module.exports = {
             .setCustomId('another_commander')
         );
 
-        // Ajouter l'image de la carte dans la réponse
-        await interaction.update({
+        const messagePayload = {
           content: `Voici votre commandant aléatoire : **${commander.name}** !`,
           components: [row],
           embeds: [
@@ -85,26 +83,35 @@ module.exports = {
               url: commander.scryfall_uri
             }
           ]
-        });
-      };
+        };
 
-      // Initial generation of commander
-      await generateCommanderResponse();
-
-      // Listener pour le bouton "Un autre !"
-      const filter = i => i.customId === 'another_commander' && i.user.id === interaction.user.id;
-      const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 }); // Extending collector to 60 seconds
-
-      collector.on('collect', async i => {
-        if (i.customId === 'another_commander') {
-          interaction = i; // Update interaction to handle the response properly
-          await generateCommanderResponse();
+        if (isInitial) {
+          await interaction.reply(messagePayload);
+        } else {
+          await interaction.editReply(messagePayload);
         }
-      });
+      } catch (error) {
+        console.error(error);
+        if (isInitial) {
+          await interaction.reply({ content: "Une erreur est survenue lors de la récupération du commandant. Veuillez réessayer plus tard.", ephemeral: true });
+        } else {
+          await interaction.followUp({ content: "Une erreur est survenue lors de la récupération du commandant. Veuillez réessayer plus tard.", ephemeral: true });
+        }
+      }
+    };
 
-    } catch (error) {
-      console.error(error);
-      await interaction.reply({ content: "Une erreur est survenue lors de la récupération du commandant. Veuillez réessayer plus tard.", ephemeral: true });
-    }
+    // Initial generation of commander
+    await generateCommanderResponse(true);
+
+    // Listener pour le bouton "Un autre !"
+    const filter = i => i.customId === 'another_commander' && i.user.id === interaction.user.id;
+    const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 }); // Extend collector to 60 seconds
+
+    collector.on('collect', async i => {
+      if (i.customId === 'another_commander') {
+        await i.deferUpdate(); // Acknowledge the button press to prevent interaction failure
+        await generateCommanderResponse(false);
+      }
+    });
   }
 };
