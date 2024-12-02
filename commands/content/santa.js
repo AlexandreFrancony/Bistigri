@@ -43,6 +43,14 @@ module.exports = {
         return interaction.reply("Il faut au moins deux participants avec le rôle 'Secret Santa' pour organiser un échange de cadeaux.");
       }
 
+      //Afficher les participants
+      let participantsList = "Participants : ";
+      participants.forEach((participant, index) => {
+        participantsList += `${index + 1}. ${participant.user.username}\n`;
+      });
+
+      interaction.reply(participantsList);
+
       // Mélanger les participants et attribuer un partenaire
       let shuffled = [...participants];
       let assigned = false;
