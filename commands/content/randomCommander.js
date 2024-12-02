@@ -1,6 +1,6 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, SlashCommandBuilder } = require('discord.js');
 const axios = require('axios');
-const emojis = require("../utility/emojis.js");
+const emojis = require("../emojis.json");
 
 module.exports = {
   data: new SlashCommandBuilder()
