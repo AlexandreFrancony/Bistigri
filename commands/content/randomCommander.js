@@ -1,5 +1,6 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, SlashCommandBuilder } = require('discord.js');
 const axios = require('axios');
+const emojis = require('./emojis');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -58,11 +59,11 @@ module.exports = {
         // Créer les boutons pour accéder à la page du commandant sur Scryfall, EDHRec, et un autre pour tirer un autre commandant
         const row = new ActionRowBuilder().addComponents(
           new ButtonBuilder()
-            .setLabel(`:scryfall: Voir ${commander.name} sur Scryfall`)
+            .setLabel(`${emojis.scryfall} Voir ${commander.name} sur Scryfall`)
             .setStyle(ButtonStyle.Link)
             .setURL(commander.scryfall_uri),
           new ButtonBuilder()
-            .setLabel(`:playin: Voir ${commander.name} sur EDHRec`)
+            .setLabel(`${emojis.playin} Voir ${commander.name} sur EDHRec`)
             .setStyle(ButtonStyle.Link)
             .setURL(`https://edhrec.com/route/?cc=${encodeURIComponent(commander.name)}`),
           new ButtonBuilder()
