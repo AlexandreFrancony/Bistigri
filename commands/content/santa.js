@@ -1,5 +1,3 @@
-// santa.js - Commande pour !santa
-
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const handleFriendResponse = require('./functions/friend-responses');
 
@@ -27,12 +25,11 @@ module.exports = {
         return interaction.reply("Cette commande ne peut être utilisée que dans un serveur.");
       }
 
-      // Récupérer le rôle 'Secret Santa' dans le serveur par son ID depuis la variable d'environnement
-      const santaRoleId = process.env.SANTA_ROLE_ID;
-      const santaRole = await interaction.guild.roles.fetch(santaRoleId); // Utilisation de fetch pour s'assurer que le rôle est bien récupéré
+      // Chercher le rôle 'Secret Santa' dans le serveur par nom
+      const santaRole = interaction.guild.roles.cache.find(role => role.name.toLowerCase() === 'secret santa');
 
       if (!santaRole) {
-        return interaction.reply("Le rôle 'Secret Santa' n'existe pas. Veuillez vérifier l'ID du rôle et l'attribuer aux participants.");
+        return interaction.reply("Le rôle 'Secret Santa' n'existe pas ou n'a pas été trouvé. Veuillez vérifier le nom du rôle et l'attribuer aux participants.");
       }
 
       // Récupérer tous les membres du serveur pour s'assurer que le cache est mis à jour
