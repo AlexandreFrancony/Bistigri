@@ -45,12 +45,12 @@ module.exports = {
       }
 
       //Afficher les participants
-      let participantsList = "Participants : ";
+      let participantsList = "Participants : \n";
       participants.forEach((participant, index) => {
         participantsList += `${index + 1}. ${participant.user.username}\n`;
       });
 
-      console.log("participants :" + participantsList);
+      console.log(participantsList);
 
       // Mélanger les participants et attribuer un partenaire
       let shuffled = [...participants];
