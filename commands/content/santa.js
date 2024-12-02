@@ -16,7 +16,7 @@ module.exports = {
         if (friendsIds.includes(interaction.user.id)) {
           return handleFriendResponse(interaction);
         } else {
-          return interaction.reply("Vous n'avez pas les droits nécessaires pour exécuter cette commande. id: "+ interaction.user.id);
+          return interaction.reply("Vous n'avez pas les droits nécessaires pour exécuter cette commande. id: " + interaction.user.id);
         }
       }
 
@@ -25,12 +25,13 @@ module.exports = {
         return interaction.reply("Cette commande ne peut être utilisée que dans un serveur.");
       }
 
+      // Répondre rapidement à l'interaction pour éviter l'expiration
+      await interaction.reply("Le Secret Santa est en cours de traitement, veuillez patienter... 🎅");
+
       // Chercher le rôle 'Secret Santa' dans le serveur par nom
       const santaRole = interaction.guild.roles.cache.find(role => role.name.toLowerCase() === 'secret santa');
-      console.log("ID santarole : " + santaRole.id);
-
       if (!santaRole) {
-        return interaction.reply("Le rôle 'Secret Santa' n'existe pas ou n'a pas été trouvé. Veuillez vérifier le nom du rôle et l'attribuer aux participants.");
+        return interaction.followUp("Le rôle 'Secret Santa' n'existe pas ou n'a pas été trouvé. Veuillez vérifier le nom du rôle et l'attribuer aux participants.");
       }
 
       // Récupérer tous les membres du serveur pour s'assurer que le cache est mis à jour
@@ -41,15 +42,14 @@ module.exports = {
       const participants = Array.from(members.values());
 
       if (participants.length < 2) {
-        return interaction.reply("Il faut au moins deux participants avec le rôle 'Secret Santa' pour organiser un échange de cadeaux.");
+        return interaction.followUp("Il faut au moins deux participants avec le rôle 'Secret Santa' pour organiser un échange de cadeaux.");
       }
 
-      //Afficher les participants
+      // Afficher les participants
       let participantsList = "Participants : \n";
       participants.forEach((participant, index) => {
         participantsList += `${index + 1}. ${participant.user.username}\n`;
       });
-
       console.log(participantsList);
 
       // Mélanger les participants et attribuer un partenaire
@@ -57,7 +57,7 @@ module.exports = {
       let assigned = false;
 
       // Essayer de mélanger jusqu'à éviter les couples réciproques
-      var i = 0;
+      let i = 0;
       while (!assigned) {
         i++;
         console.log("Shuffling number " + i);
@@ -89,18 +89,25 @@ module.exports = {
           await giver.send(`Bonjour ${giver.user.username}, vous allez offrir un cadeau à : **${receiver.user.username}** ! 🎁`);
         } catch (err) {
           console.log("[ERROR] MP to " + giver.user.username);
-          interaction.followUp(`Impossible d'envoyer un message privé à ${giver.user.username}. Veuillez vérifier ses paramètres de confidentialité.`);
+          await interaction.followUp(`Impossible d'envoyer un message privé à ${giver.user.username}. Veuillez vérifier ses paramètres de confidentialité.`);
         }
       }
 
-      interaction.reply("Les affectations pour le Secret Santa ont été envoyées à chaque participant ! 🎅🎄");
+      // Mettre à jour la réponse d'origine pour informer de la réussite
+      await interaction.followUp("Les affectations pour le Secret Santa ont été envoyées à chaque participant ! 🎅🎄");
+      
       setTimeout(() => {
         interaction.followUp("https://youtu.be/uuEZu6VK-U8");
       }, 2000);
-      
+
     } catch (error) {
       console.error(error);
-      interaction.reply("Une erreur est survenue lors de l'organisation du Secret Santa. Veuillez réessayer.");
+      // Si une erreur se produit, répondre en conséquence
+      if (interaction.replied || interaction.deferred) {
+        await interaction.followUp("Une erreur est survenue lors de l'organisation du Secret Santa. Veuillez réessayer.");
+      } else {
+        await interaction.reply("Une erreur est survenue lors de l'organisation du Secret Santa. Veuillez réessayer.");
+      }
     }
   }
 };
