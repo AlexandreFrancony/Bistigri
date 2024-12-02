@@ -63,7 +63,7 @@ module.exports = {
             .setStyle(ButtonStyle.Link)
             .setURL(commander.scryfall_uri),
           new ButtonBuilder()
-            .setLabel(`${emojis.playin} Voir ${commander.name} sur EDHRec`)
+            .setLabel(`${emojis.edhrec} Voir ${commander.name} sur EDHRec`)
             .setStyle(ButtonStyle.Link)
             .setURL(`https://edhrec.com/route/?cc=${encodeURIComponent(commander.name)}`),
           new ButtonBuilder()
