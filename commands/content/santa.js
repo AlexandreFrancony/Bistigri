@@ -81,6 +81,10 @@ module.exports = {
       }
 
       interaction.reply("Les affectations pour le Secret Santa ont été envoyées à chaque participant ! 🎅🎄");
+      setTimeout(() => {
+        interaction.followUp("https://youtu.be/uuEZu6VK-U8");
+      }, 2000);
+      
     } catch (error) {
       console.error(error);
       interaction.reply("Une erreur est survenue lors de l'organisation du Secret Santa. Veuillez réessayer.");
