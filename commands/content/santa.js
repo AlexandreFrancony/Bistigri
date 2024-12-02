@@ -27,6 +27,7 @@ module.exports = {
 
       // Chercher le rôle 'Secret Santa' dans le serveur par nom
       const santaRole = interaction.guild.roles.cache.find(role => role.name.toLowerCase() === 'secret santa');
+      console.log("ID santarole : " + santaRole.id);
 
       if (!santaRole) {
         return interaction.reply("Le rôle 'Secret Santa' n'existe pas ou n'a pas été trouvé. Veuillez vérifier le nom du rôle et l'attribuer aux participants.");
@@ -49,14 +50,17 @@ module.exports = {
         participantsList += `${index + 1}. ${participant.user.username}\n`;
       });
 
-      interaction.reply("Les participants sont donc :" + participantsList);
+      console.log("participants :" + participantsList);
 
       // Mélanger les participants et attribuer un partenaire
       let shuffled = [...participants];
       let assigned = false;
 
       // Essayer de mélanger jusqu'à éviter les couples réciproques
+      var i = 0;
       while (!assigned) {
+        i++;
+        console.log("Shuffling number " + i);
         shuffled = shuffled.sort(() => Math.random() - 0.5);
         assigned = true;
 
@@ -73,14 +77,18 @@ module.exports = {
         }
       }
 
+      console.log("Shuffled participants done. i = " + i);
+
       // Envoyer les résultats à chaque participant en message privé
       for (let i = 0; i < participants.length; i++) {
         const giver = participants[i];
         const receiver = shuffled[i];
 
         try {
+          console.log("Sending message to " + giver.user.username);
           await giver.send(`Bonjour ${giver.user.username}, vous allez offrir un cadeau à : **${receiver.user.username}** ! 🎁`);
         } catch (err) {
+          console.log("[ERROR] MP to " + giver.user.username);
           interaction.followUp(`Impossible d'envoyer un message privé à ${giver.user.username}. Veuillez vérifier ses paramètres de confidentialité.`);
         }
       }
