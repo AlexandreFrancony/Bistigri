@@ -49,7 +49,7 @@ module.exports = {
         participantsList += `${index + 1}. ${participant.user.username}\n`;
       });
 
-      interaction.reply(participantsList);
+      interaction.reply("Les participants sont donc :" + participantsList);
 
       // Mélanger les participants et attribuer un partenaire
       let shuffled = [...participants];
