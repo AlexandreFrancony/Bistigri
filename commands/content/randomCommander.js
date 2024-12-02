@@ -59,13 +59,15 @@ module.exports = {
         // Créer les boutons pour accéder à la page du commandant sur Scryfall, EDHRec, et un autre pour tirer un autre commandant
         const row = new ActionRowBuilder().addComponents(
           new ButtonBuilder()
-            .setLabel(`${emojis.scryfall} Voir ${commander.name} sur Scryfall`)
+            .setLabel(`Voir ${commander.name} sur Scryfall`)
             .setStyle(ButtonStyle.Link)
-            .setURL(commander.scryfall_uri),
+            .setURL(commander.scryfall_uri)
+            .setEmoji({ id: emojis.scryfall }),
           new ButtonBuilder()
-            .setLabel(`${emojis.edhrec} Voir ${commander.name} sur EDHRec`)
+            .setLabel(`Voir ${commander.name} sur EDHRec`)
             .setStyle(ButtonStyle.Link)
-            .setURL(`https://edhrec.com/route/?cc=${encodeURIComponent(commander.name)}`),
+            .setURL(`https://edhrec.com/route/?cc=${encodeURIComponent(commander.name)}`)
+            .setEmoji({ id: emojis.edhrec }),
           new ButtonBuilder()
             .setLabel('Un autre !')
             .setStyle(ButtonStyle.Primary)
@@ -124,11 +126,13 @@ module.exports = {
           new ButtonBuilder()
             .setLabel(`Voir ${originalMessage.embeds[0].title} sur Scryfall`)
             .setStyle(ButtonStyle.Link)
-            .setURL(originalMessage.embeds[0].url),
+            .setURL(originalMessage.embeds[0].url)
+            .setEmoji({ id: emojis.scryfall }),
           new ButtonBuilder()
             .setLabel(`Voir ${originalMessage.embeds[0].title} sur EDHRec`)
             .setStyle(ButtonStyle.Link)
             .setURL(`https://edhrec.com/route/?cc=${encodeURIComponent(originalMessage.embeds[0].title)}`)
+            .setEmoji({ id: emojis.edhrec }),
         );
         await interaction.editReply({ components: [updatedRow] });
       } catch (error) {
