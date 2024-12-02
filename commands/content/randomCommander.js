@@ -59,12 +59,12 @@ module.exports = {
         // Créer les boutons pour accéder à la page du commandant sur Scryfall, EDHRec, et un autre pour tirer un autre commandant
         const row = new ActionRowBuilder().addComponents(
           new ButtonBuilder()
-            .setLabel(`Voir ${commander.name} sur Scryfall`)
+            .setLabel(`${commander.name} sur Scryfall`)
             .setStyle(ButtonStyle.Link)
             .setURL(commander.scryfall_uri)
             .setEmoji({ id: emojis.scryfall }),
           new ButtonBuilder()
-            .setLabel(`Voir ${commander.name} sur EDHRec`)
+            .setLabel(`${commander.name} sur EDHRec`)
             .setStyle(ButtonStyle.Link)
             .setURL(`https://edhrec.com/route/?cc=${encodeURIComponent(commander.name)}`)
             .setEmoji({ id: emojis.edhrec }),
